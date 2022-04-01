@@ -81,6 +81,7 @@ export default function App() {
       .catch((err) => {
         if (err.response.status === 401) {
           redirectToLogin();
+          window.localStorage.removeItem("token");
           setMessage("Ouch: jwt expired");
         } else {
           setMessage(err.response.data.message);
