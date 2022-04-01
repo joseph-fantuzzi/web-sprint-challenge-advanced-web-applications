@@ -82,6 +82,7 @@ export default function App() {
         setMessage(err.response.data.message);
         if (err.response.status === 401) {
           redirectToLogin();
+          setMessage("Ouch: jwt expired");
         }
       })
       .finally(() => {
@@ -110,9 +111,27 @@ export default function App() {
       });
   };
 
-  const updateArticle = ({ article_id, article }) => {
+  const updateArticle = (article_id, article) => {
     // ✨ implement
     // You got this!
+    setSpinnerOn(true);
+    axiosWithAuth()
+      .put(`${articlesUrl}/${article_id}`, article)
+      .then((res) => {
+        setArticles(
+          articles.map((article) => {
+            return article.article_id === article_id ? res.data.article : article;
+          })
+        );
+        setMessage(res.data.message);
+        setCurrentArticleId();
+      })
+      .catch((err) => {
+        setMessage(err.response.data.message);
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   const deleteArticle = (article_id) => {
