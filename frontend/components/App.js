@@ -79,10 +79,11 @@ export default function App() {
         setMessage(res.data.message);
       })
       .catch((err) => {
-        setMessage(err.response.data.message);
         if (err.response.status === 401) {
           redirectToLogin();
           setMessage("Ouch: jwt expired");
+        } else {
+          setMessage(err.response.data.message);
         }
       })
       .finally(() => {
@@ -114,6 +115,7 @@ export default function App() {
   const updateArticle = (article_id, article) => {
     // ✨ implement
     // You got this!
+    setMessage("");
     setSpinnerOn(true);
     axiosWithAuth()
       .put(`${articlesUrl}/${article_id}`, article)
@@ -136,6 +138,7 @@ export default function App() {
 
   const deleteArticle = (article_id) => {
     // ✨ implement
+    setMessage("");
     setSpinnerOn(true);
     axiosWithAuth()
       .delete(`${articlesUrl}/${article_id}`)
