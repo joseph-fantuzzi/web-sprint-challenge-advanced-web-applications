@@ -51,7 +51,7 @@ export default function App() {
       .then((res) => {
         window.localStorage.setItem("token", res.data.token);
         setMessage(res.data.message);
-        navigate("/articles");
+        redirectToArticles();
       })
       .catch((err) => {
         setMessage(err.response.data.message);
@@ -81,7 +81,7 @@ export default function App() {
       .catch((err) => {
         setMessage(err.response.data.message);
         if (err.response.status === 401) {
-          navigate("/");
+          redirectToLogin();
         }
       })
       .finally(() => {
@@ -94,6 +94,20 @@ export default function App() {
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
+    setMessage("");
+    setSpinnerOn(true);
+    axiosWithAuth()
+      .post(articlesUrl, article)
+      .then((res) => {
+        setArticles([...articles, res.data.article]);
+        setMessage(res.data.message);
+      })
+      .catch((err) => {
+        setMessage(err.response.data.message);
+      })
+      .finally(() => {
+        setSpinnerOn(false);
+      });
   };
 
   const updateArticle = ({ article_id, article }) => {
@@ -109,7 +123,7 @@ export default function App() {
     // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
     <React.StrictMode>
       <Spinner on={spinnerOn} />
-      <Message />
+      <Message message={message} />
       <button id="logout" onClick={logout}>
         Logout from app
       </button>
@@ -129,7 +143,12 @@ export default function App() {
             path="articles"
             element={
               <>
-                <ArticleForm />
+                <ArticleForm
+                  postArticle={postArticle}
+                  updateArticle={updateArticle}
+                  setCurrentArticleId={setCurrentArticleId}
+                  currentArticle={null}
+                />
                 <Articles articles={articles} getArticles={getArticles} />
               </>
             }
