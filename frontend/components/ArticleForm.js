@@ -26,15 +26,16 @@ export default function ArticleForm(props) {
     // We must submit a new post or update an existing one,
     // depending on the truthyness of the `currentArticle` prop.
     postArticle(values);
+    setValues(initialFormValues);
   };
 
   const isDisabled = () => {
     // ✨ implement
     // Make sure the inputs have some values
     if (values.title.trim().length >= 1 && values.text.trim().length >= 1 && values.topic !== "") {
-      return null;
+      return false;
     }
-    return "disabled";
+    return true;
   };
 
   return (
